@@ -1,0 +1,94 @@
+---
+title: "Covid Schools Project"
+author: "Stephanie Kane"
+date: "10/17/2021"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Covid - 19 Schools project
+Importing and tidying data files
+
+```{r}
+library(dplyr)
+library(ggplot2)
+library(readr)
+library(tidyr)
+library(tidyverse)
+library(readxl)
+```
+
+Oregon Data: \
+
+Available data-  \
+*Learning Mode* \
+*Masking Data* \
+*Covid Cases* \
+
+```{r}
+oregon_learnmode_raw<-read.csv("C:\\Users\\Patton Home\\Documents\\Classes\\CPT_S 575 Fall 2021\\Project\\Learning Model Data Files (N-Z)  CSVs\\Oregon_LearningModelData_Final.csv",header=TRUE,sep=",")
+
+oregon_learnmode_raw<-read_xlsx("C:\\Users\\Patton Home\\Documents\\Classes\\CPT_S 575 Fall 2021\\Project\\Learning Model Data Files (N-Z)  CSVs\\Oregon_LearningModelData_Final.xlsx",col_types=c("text","text","text","text","text","text","numeric","numeric","text","text","numeric","numeric","numeric","text","date","date","text","skip","skip","skip","text","skip","skip","skip","numeric","numeric","numeric", "numeric","numeric"))
+
+oregon_masking_raw<-read.csv("C:\\Users\\Patton Home\\Documents\\Classes\\CPT_S 575 Fall 2021\\Project\\Masking Data\\Oregon_MaskingData.csv",header=TRUE,sep=",")
+
+oregon_covid_raw<-read.csv("C:\\Users\\Patton Home\\Documents\\Classes\\CPT_S 575 Fall 2021\\Project\\CSDH COVID-19 Data\\CSDH_OR_COVID_Schools.csv",header=TRUE,sep=",")
+```
+
+Washington Data: \
+
+Available Data - \
+*Learning Mode* \
+*Masking Data* \
+\
+*High Poverty School Data* \
+*Covid Cases by County from DOH*\
+
+
+```{r}
+wash_learnmode_raw<-read.csv("C:\\Users\\Patton Home\\Documents\\Classes\\CPT_S 575 Fall 2021\\Project\\Learning Model Data Files (N-Z)  CSVs\\Washington_LearningModelData_Final.csv",header=TRUE,sep=",")
+
+wash_masking_raw<-read.csv("C:\\Users\\Patton Home\\Documents\\Classes\\CPT_S 575 Fall 2021\\Project\\Masking Data\\Washington_MaskingData .csv",header=TRUE,sep=",")  
+
+WA_high_poverty <- read.csv("C:\\Users\\Patton Home\\Documents\\Classes\\CPT_S 575 Fall 2021\\Project\\National Board High Poverty Schools List for 2020_21_WA.csv",header=TRUE,sep=",")
+
+WA_doh_covid_cases <- read.csv("C:\\Users\\Patton Home\\Documents\\Classes\\CPT_S 575 Fall 2021\\Project\\WA_COVID19_Cases_Hospitalizations_Deaths-1.csv",header=TRUE,sep=",")
+```
+
+Idaho Data: \
+
+Available Data - \
+*Masking Data*\
+*Covid Cases*\
+
+```{r}   
+idaho_masking_raw<-read.csv("C:\\Users\\Patton Home\\Documents\\Classes\\CPT_S 575 Fall 2021\\Project\\Masking Data\\Idaho_MaskingData.csv",header=TRUE,sep=",")
+
+idaho_covid_raw<-read.csv("C:\\Users\\Patton Home\\Documents\\Classes\\CPT_S 575 Fall 2021\\Project\\CSDH COVID-19 Data\\CSDH_ID_COVID_Schools.csv",header=TRUE,sep=",")
+```
+
+
+Other Important Datasets: \
+
+xw_district_NCES_zip
+
+```{r}
+xw_district_NCES_Zip <- read.csv("C:\\Users\\Patton Home\\Documents\\Classes\\CPT_S 575 Fall 2021\\Project\\District_NCES_Zip_Crosswalk.csv",header=TRUE,sep=",")
+```
+
+
+```{r}
+xw_calendar<-read.csv("C:\\Users\\Patton Home\\Documents\\Classes\\CPT_S 575 Fall 2021\\Project\\xw_calendar.csv",header=TRUE,sep=",")
+xw_calendar1<-as.data.frame(xw_calendar1)
+View(xw_calendar1)
+oregon_learmode_raw1<-as.data.frame(oregon_learnmode_raw)
+oregon_learnmode<-left_join(oregon_learnmode_raw,xw_calendar1,by=c("TimePeriodStart"="Date"))
+```
+
+*Dealing with dates:*
+
+We had to figure out a way to align dates across files as each of the schools had different intervals for testing and reporting modality and masking information.  We created a calendar system starting with the first week of July and ending with the last week of June that counted days and weeks.  That way we could align reporting across data sets and states.  It also helped us account for different date formats (e.g. 7/10/2020 vs 07/10/20).
+
